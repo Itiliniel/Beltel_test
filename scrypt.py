@@ -21,7 +21,6 @@ def read_file(path, file_number, count_files):
             'GeneralInfo' not in json_data.keys() \
             or not isinstance(json_data["GeneralInfo"], pd.Series):
         return
-
     QtyGoodsLists = json_data["Information"]["QtyGoodsLists"] if isinstance(json_data["Information"]["QtyGoodsLists"],
                                                                             int) else 0
     GoodsLists = json_data["Information"]["GoodsLists"] if isinstance(json_data["Information"]["GoodsLists"],
@@ -30,15 +29,15 @@ def read_file(path, file_number, count_files):
         print('Warning: Len GoodsLists not equal QtyGoodsLists in file ' + File)
         if len(GoodsLists) < QtyGoodsLists:
             QtyGoodsLists = len(GoodsLists)
-    print("Найдено списков товаров: " + str(QtyGoodsLists) + " в фаиле номер " + str(file_number) + " / " + str(
+    print("Found product lists: " + str(QtyGoodsLists) + " in file № " + str(file_number) + " / " + str(
         count_files))
     GeneralInfo = json_data["GeneralInfo"]
     DateBegin = GeneralInfo["DateBegin"] if 'DateBegin' in GeneralInfo.keys() else None
     DateEnd = GeneralInfo["DateEnd"] if 'DateEnd' in GeneralInfo.keys() else None
     PWCcode = GeneralInfo["PWCcode"] if 'PWCcode' in GeneralInfo.keys() else None
     for IndexGoodsList in range(0, QtyGoodsLists):
-        print("\nПроверяю список товаров номер " + str(IndexGoodsList + 1) + " / " + str(
-            QtyGoodsLists) + " в фаиле номер " + str(file_number) + " / " + str(count_files))
+        print("\nChecking the list of goods № " + str(IndexGoodsList + 1) + " / " + str(
+            QtyGoodsLists) + " in file № " + str(file_number) + " / " + str(count_files))
         GoodsListItem = GoodsLists[IndexGoodsList]
         GoodsListItemIsDict = isinstance(GoodsListItem, dict)
         QtyPrices = GoodsListItem["QtyPrices"] if GoodsListItemIsDict and 'QtyPrices' in GoodsListItem.keys() else 0
@@ -83,11 +82,11 @@ def read_file(path, file_number, count_files):
                     QtyGoods = len(Data)
             ManyGoods = False
             if QtyGoods > 1000:
-                print("Товаров много")
+                print("There are a lot of goods")
                 ManyGoods = True
             for DataIndex in range(0, QtyGoods):
                 if ManyGoods and DataIndex % 100 == 0:
-                    print("Проверяю товар номер " + str(DataIndex + 1) + " / " + str(QtyGoods))
+                    print("Checking good № " + str(DataIndex + 1) + " / " + str(QtyGoods))
                 DataItem = Data[DataIndex]
                 Item = DataItem[ItemColumnIndex] if 0 <= ItemColumnIndex < len(DataItem) else None
                 SalePriceBeforePromo = DataItem[
@@ -121,9 +120,9 @@ count_files = len(file_list)
 # запись в файл
 for file in file_list:
     file_number = file_list.index(file) + 1
-    print("Начинаю разбор фаила " + file + " номер " + str(file_number) + " / " + str(count_files))
+    print("File parsing started " + file + " № " + str(file_number) + " / " + str(count_files))
     datas = datas.append(read_file(file, file_number, count_files))
-    print("Разбор фаила  номер " + str(file_number) + " / " + str(count_files) + " закончен! ")
+    print("File parsing  № " + str(file_number) + " / " + str(count_files) + " finished! ")
 datas.to_excel('./result.xlsx', index=False, na_rep='None')
 
 # ObjCode = json_data["Information"]["GoodsLists"][0]["Prices"][0]["StoreCode"]
